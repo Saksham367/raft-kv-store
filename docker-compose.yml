@@ -1,0 +1,21 @@
+# Three-replica cluster. Try:  docker compose up -d && docker compose stop node0
+x-node: &node
+  build: .
+  restart: unless-stopped
+services:
+  node0:
+    <<: *node
+    command: ["-id", "0", "-peers", "http://node0:9000,http://node1:9000,http://node2:9000", "-data", "/data"]
+    ports: ["9000:9000"]
+    volumes: ["node0:/data"]
+  node1:
+    <<: *node
+    command: ["-id", "1", "-peers", "http://node0:9000,http://node1:9000,http://node2:9000", "-data", "/data"]
+    ports: ["9001:9000"]
+    volumes: ["node1:/data"]
+  node2:
+    <<: *node
+    command: ["-id", "2", "-peers", "http://node0:9000,http://node1:9000,http://node2:9000", "-data", "/data"]
+    ports: ["9002:9000"]
+    volumes: ["node2:/data"]
+volumes: {node0: {}, node1: {}, node2: {}}
